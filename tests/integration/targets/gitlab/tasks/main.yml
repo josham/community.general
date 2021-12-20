@@ -1,0 +1,37 @@
+####################################################################
+# WARNING: These are designed specifically for Ansible tests       #
+# and should not be used as examples of how to write Ansible roles #
+####################################################################
+
+- name: get hostname
+  ansible.builtin.shell: docker exec gitlab_gitlab_1 hostname
+  register: hostname
+
+- name: set gitlab_external_url
+  ansible.builtin.set_fact:
+    gitlab_external_url: "https://{{ hostname.stdout }}"
+
+- name: get initial_root_password
+  ansible.builtin.shell: |
+    docker exec gitlab_gitlab_1 cat /etc/gitlab/initial_root_password | grep 'Password:' | sed -e 's/Password\: \(.*\)/\1/'
+  register: initial_root_password
+
+- name: Create oath token
+  ansible.builtin.uri:
+    url: "{{ gitlab_external_url }}/oauth/token"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      grant_type: password
+      username: root
+      password: "{{ initial_root_password.stdout }}"
+  register: oauth_token
+  
+- name: set oauth auth header
+  set_fact:
+    auth_header:
+      Authorization: "Bearer {{ oauth_token.json.access_token }}"
+  
+- name: set oauth auth header
+  debug:
+    msg: "{{ auth_header }}"
