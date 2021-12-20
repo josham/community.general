@@ -1,10 +1,10 @@
 checkoutLocation: "ansible_collections/community/general"
 workspaceLocation: "ansible_collections/community/general"
 tasks:
-  - before: python -m pip install ansible
+  - before: |
+      python -m pip install ansible pre-commit
+      "$(pyenv prefix)/bin/pre-commit" install --install-hooks
 
 ports:
-  - port: 3000
-    onOpen: open-preview
   - port: 8880
     onOpen: ignore

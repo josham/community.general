@@ -2,11 +2,9 @@ version: "3.6"
 services:
   gitlab:
     image: 'gitlab/gitlab-ee:latest'
-    hostname: '8880-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}'
+    container_name: gitlab
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://8880-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}'
-        nginx['listen_https'] = false
-        nginx['listen_port'] = 80
+        external_url 'http://localhost'
     ports:
       - '8880:80'
