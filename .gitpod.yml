@@ -1,9 +1,7 @@
 checkoutLocation: "ansible_collections/community/general"
 workspaceLocation: "ansible_collections/community/general"
 tasks:
-  - init: setup env
-    command: |
-      python -m pip install ansible
+  - before: python -m pip install ansible
 
 ports:
   - port: 3000
